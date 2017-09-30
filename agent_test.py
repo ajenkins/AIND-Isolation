@@ -28,7 +28,7 @@ class IsolationTest(unittest.TestCase):
 
     def test_minimax_best_move(self):
         player = game_agent.MinimaxPlayer(score_fn=self._score_function)
-        self.assertEqual((-1, -1), player.get_move(self.game, self._time_left))
+        self.assertEqual((0, 0), player.get_move(self.game, self._time_left))
 
 
 if __name__ == '__main__':

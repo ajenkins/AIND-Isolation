@@ -229,7 +229,7 @@ class MinimaxPlayer(IsolationPlayer):
         otherwise return the minimum value over all legal child
         nodes.
         """
-        if self._terminal_test(game):
+        if self._terminal_test(game, remaining_depth):
             return self.score(game, game.active_player)
         smallest = float('inf')
         for move in game.get_legal_moves():
@@ -243,7 +243,7 @@ class MinimaxPlayer(IsolationPlayer):
         otherwise return the maximum value over all legal child
         nodes.
         """
-        if self._terminal_test(game):
+        if self._terminal_test(game, remaining_depth):
             return self.score(game, game.active_player)
         biggest = float('-inf')
         for move in game.get_legal_moves():
