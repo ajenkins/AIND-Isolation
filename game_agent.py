@@ -212,28 +212,45 @@ class MinimaxPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # def sort_func(move):
-        #     return self._min_value(game.forecast_move(move))
-        # return max(*game.get_legal_moves(), key=sort_func)
-        legal_moves = game.get_legal_moves()
-        if legal_moves:
-            return legal_moves[0]
-        else:
-            return (-1, -1)
+        def sort_func(move):
+            return self._min_value(game.forecast_move(move), depth)
+        return max(*game.get_legal_moves(), key=sort_func)
 
-    def _min_value(self, gameState, depth):
+    def _terminal_test(self, game, remaining_depth):
+        """ Return True if the game is over for the active player
+        and False otherwise.
+        """
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+        return len(game.get_legal_moves()) == 0 or remaining_depth == 0
+
+    def _min_value(self, game, remaining_depth):
         """ Return the value for a win (+inf) if the game is over,
         otherwise return the minimum value over all legal child
         nodes.
         """
-        pass
+        smallest = float('inf')
+        if self._terminal_test(game):
+            return smallest
+        for move in game.get_legal_moves():
+            this_min = self._max_value(game.forecast_move(move), remaining_depth - 1)
+            if this_min < smallest:
+                smallest = this_min
+        return smallest
 
-    def _max_value(self, gameState, depth):
+    def _max_value(self, game, remaining_depth):
         """ Return the value for a loss (-inf) if the game is over,
         otherwise return the maximum value over all legal child
         nodes.
         """
-        pass
+        biggest = float('-inf')
+        if self._terminal_test(game):
+            return biggest
+        for move in game.get_legal_moves():
+            this_max = self._min_value(game.forecast_move(move), remaining_depth - 1)
+            if this_max > biggest:
+                biggest = this_max
+        return biggest
 
 
 class AlphaBetaPlayer(IsolationPlayer):
