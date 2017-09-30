@@ -225,13 +225,13 @@ class MinimaxPlayer(IsolationPlayer):
         return len(game.get_legal_moves()) == 0 or remaining_depth == 0
 
     def _min_value(self, game, remaining_depth):
-        """ Return the value for a win (+inf) if the game is over,
+        """ Return the score for the current player if the game is over,
         otherwise return the minimum value over all legal child
         nodes.
         """
-        smallest = float('inf')
         if self._terminal_test(game):
-            return smallest
+            return self.score(game, game.active_player)
+        smallest = float('inf')
         for move in game.get_legal_moves():
             this_min = self._max_value(game.forecast_move(move), remaining_depth - 1)
             if this_min < smallest:
@@ -239,13 +239,13 @@ class MinimaxPlayer(IsolationPlayer):
         return smallest
 
     def _max_value(self, game, remaining_depth):
-        """ Return the value for a loss (-inf) if the game is over,
+        """ Return the score for the current player if the game is over,
         otherwise return the maximum value over all legal child
         nodes.
         """
-        biggest = float('-inf')
         if self._terminal_test(game):
-            return biggest
+            return self.score(game, game.active_player)
+        biggest = float('-inf')
         for move in game.get_legal_moves():
             this_max = self._min_value(game.forecast_move(move), remaining_depth - 1)
             if this_max > biggest:
