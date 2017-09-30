@@ -15,10 +15,10 @@ class IsolationTest(unittest.TestCase):
     """Unit tests for isolation agents"""
 
     def _score_function(self, game, player):
-        return 0
+        return game.utility(player)
 
     def _time_left(self):
-        return 1
+        return 1000
 
     def setUp(self):
         reload(game_agent)
@@ -28,7 +28,7 @@ class IsolationTest(unittest.TestCase):
 
     def test_minimax_best_move(self):
         player = game_agent.MinimaxPlayer(score_fn=self._score_function)
-        print(player.get_move(self.game, self._time_left))
+        self.assertEqual((-1, -1), player.get_move(self.game, self._time_left))
 
 
 if __name__ == '__main__':
