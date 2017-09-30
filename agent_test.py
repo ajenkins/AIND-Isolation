@@ -24,10 +24,10 @@ class IsolationTest(unittest.TestCase):
         reload(game_agent)
         self.player1 = "Player1"
         self.player2 = "Player2"
-        self.game = isolation.Board(self.player1, self.player2)
+        self.game = isolation.Board(self.player1, self.player2, width=3, height=2)
 
     def test_minimax_best_move(self):
-        player = game_agent.MinimaxPlayer(score_fn=self._score_function)
+        player = game_agent.MinimaxPlayer(search_depth=10, score_fn=self._score_function)
         self.assertEqual((0, 0), player.get_move(self.game, self._time_left))
 
 
