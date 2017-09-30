@@ -24,11 +24,22 @@ class IsolationTest(unittest.TestCase):
         reload(game_agent)
         self.player1 = "Player1"
         self.player2 = "Player2"
-        self.game = isolation.Board(self.player1, self.player2, width=3, height=2)
+        self.game = isolation.Board(self.player1, self.player2, width=3, height=3)
 
     def test_minimax_best_move(self):
         player = game_agent.MinimaxPlayer(search_depth=10, score_fn=self._score_function)
         self.assertEqual((0, 0), player.get_move(self.game, self._time_left))
+
+    def test_minimax_first_taken(self):
+        player = game_agent.MinimaxPlayer(search_depth=10, score_fn=self._score_function)
+        self.game.apply_move((0, 0))
+        self.assertEqual((1, 0), player.get_move(self.game, self._time_left))
+
+    def test_minimax_boxed_in(self):
+        player = game_agent.MinimaxPlayer(search_depth=10, score_fn=self._score_function)
+        self.game.apply_move((0, 0))
+        self.game.apply_move((0, 1))
+        self.assertEqual((2, 1), player.get_move(self.game, self._time_left))
 
 
 if __name__ == '__main__':
