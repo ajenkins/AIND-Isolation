@@ -213,7 +213,7 @@ class MinimaxPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         def sort_func(move):
-            return self._min_value(game.forecast_move(move), depth)
+            return self._min_value(game.forecast_move(move), depth - 1)
         return max(game.get_legal_moves(), key=sort_func)
 
     def _terminal_test(self, game, remaining_depth):
@@ -356,7 +356,7 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         max_value = self._max_value(game, alpha, beta, depth)
         return next(m for m in game.get_legal_moves()
-            if max_value == self._max_value(game.forecast_move(m), alpha, beta, depth))
+            if max_value == self._max_value(game.forecast_move(m), alpha, beta, depth - 1))
 
     def _terminal_test(self, game, remaining_depth):
         """ Return True if the game is over for the active player
