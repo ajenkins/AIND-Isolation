@@ -214,7 +214,7 @@ class MinimaxPlayer(IsolationPlayer):
 
         def sort_func(move):
             return self._min_value(game.forecast_move(move), depth)
-        return max(*game.get_legal_moves(), key=sort_func)
+        return max(game.get_legal_moves(), key=sort_func)
 
     def _terminal_test(self, game, remaining_depth):
         """ Return True if the game is over for the active player
@@ -230,7 +230,6 @@ class MinimaxPlayer(IsolationPlayer):
         nodes.
         """
         if self._terminal_test(game, remaining_depth):
-            # print("Min Score: {}".format(self.score(game, game.inactive_player)))
             return self.score(game, game.inactive_player)
         smallest = float('inf')
         for move in game.get_legal_moves():
@@ -245,7 +244,6 @@ class MinimaxPlayer(IsolationPlayer):
         nodes.
         """
         if self._terminal_test(game, remaining_depth):
-            # print("Max Score: {}".format(self.score(game, game.active_player)))
             return self.score(game, game.active_player)
         biggest = float('-inf')
         for move in game.get_legal_moves():
