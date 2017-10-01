@@ -41,6 +41,21 @@ class IsolationTest(unittest.TestCase):
         self.game.apply_move((0, 1))
         self.assertEqual((2, 1), player.get_move(self.game, self._time_left))
 
+    def test_alphabeta_best_move(self):
+        player = game_agent.AlphaBetaPlayer(search_depth=10, score_fn=self._score_function)
+        self.assertEqual((0, 0), player.get_move(self.game, self._time_left))
+
+    def test_alphabeta_first_taken(self):
+        player = game_agent.AlphaBetaPlayer(search_depth=10, score_fn=self._score_function)
+        self.game.apply_move((0, 0))
+        self.assertEqual((1, 0), player.get_move(self.game, self._time_left))
+
+    def test_alphabeta_boxed_in(self):
+        player = game_agent.AlphaBetaPlayer(search_depth=10, score_fn=self._score_function)
+        self.game.apply_move((0, 0))
+        self.game.apply_move((0, 1))
+        self.assertEqual((2, 1), player.get_move(self.game, self._time_left))
+
 
 if __name__ == '__main__':
     unittest.main()
