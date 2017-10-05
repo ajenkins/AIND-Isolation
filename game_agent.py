@@ -230,12 +230,10 @@ class MinimaxPlayer(IsolationPlayer):
         nodes.
         """
         if self._terminal_test(game, remaining_depth):
-            return self.score(game, game.inactive_player)
+            return self.score(game, self)
         smallest = float('inf')
         for move in game.get_legal_moves():
-            this_min = self._max_value(game.forecast_move(move), remaining_depth - 1)
-            if this_min < smallest:
-                smallest = this_min
+            smallest = min(smallest, self._max_value(game.forecast_move(move), remaining_depth - 1))
         return smallest
 
     def _max_value(self, game, remaining_depth):
@@ -244,12 +242,10 @@ class MinimaxPlayer(IsolationPlayer):
         nodes.
         """
         if self._terminal_test(game, remaining_depth):
-            return self.score(game, game.active_player)
+            return self.score(game, self)
         biggest = float('-inf')
         for move in game.get_legal_moves():
-            this_max = self._min_value(game.forecast_move(move), remaining_depth - 1)
-            if this_max > biggest:
-                biggest = this_max
+            biggest = max(biggest, self._min_value(game.forecast_move(move), remaining_depth - 1))
         return biggest
 
 
