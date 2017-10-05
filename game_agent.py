@@ -350,7 +350,7 @@ class AlphaBetaPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        max_value = self._max_value(game, alpha, beta, depth - 1)
+        max_value = self._max_value(game, alpha, beta, depth)
         return next(m for m in game.get_legal_moves()
             if max_value == self._max_value(game.forecast_move(m), alpha, beta, depth - 1))
 
@@ -371,10 +371,10 @@ class AlphaBetaPlayer(IsolationPlayer):
             return self.score(game, self)
         smallest = float('inf')
         for move in game.get_legal_moves():
-            this_min = self._max_value(game.forecast_move(move), alpha, beta, remaining_depth - 1)
-            if this_min <= alpha:
-                return this_min
-            beta = min(this_min, beta)
+            smallest = min(smallest, self._max_value(game.forecast_move(move), alpha, beta, remaining_depth - 1))
+            if smallest <= alpha:
+                return smallest
+            beta = min(smallest, beta)
         return smallest
 
     def _max_value(self, game, alpha, beta, remaining_depth):
@@ -386,8 +386,8 @@ class AlphaBetaPlayer(IsolationPlayer):
             return self.score(game, self)
         biggest = float('-inf')
         for move in game.get_legal_moves():
-            this_max = self._min_value(game.forecast_move(move), alpha, beta, remaining_depth - 1)
-            if this_max >= beta:
-                return this_max
-            alpha = max(this_max, alpha)
+            biggest = max(biggest, self._min_value(game.forecast_move(move), alpha, beta, remaining_depth - 1))
+            if biggest >= beta:
+                return biggest
+            alpha = max(biggest, alpha)
         return biggest
