@@ -368,14 +368,13 @@ class AlphaBetaPlayer(IsolationPlayer):
         nodes.
         """
         if self._terminal_test(game, remaining_depth):
-            return self.score(game, game.inactive_player)
+            return self.score(game, self)
         smallest = float('inf')
         for move in game.get_legal_moves():
             this_min = self._max_value(game.forecast_move(move), alpha, beta, remaining_depth - 1)
             if this_min <= alpha:
                 return this_min
-            if this_min < beta:
-                beta = this_min
+            beta = min(this_min, beta)
         return smallest
 
     def _max_value(self, game, alpha, beta, remaining_depth):
@@ -384,12 +383,11 @@ class AlphaBetaPlayer(IsolationPlayer):
         nodes.
         """
         if self._terminal_test(game, remaining_depth):
-            return self.score(game, game.active_player)
+            return self.score(game, self)
         biggest = float('-inf')
         for move in game.get_legal_moves():
             this_max = self._min_value(game.forecast_move(move), alpha, beta, remaining_depth - 1)
             if this_max >= beta:
                 return this_max
-            if this_max > alpha:
-                alpha = this_max
+            alpha = max(this_max, alpha)
         return biggest
