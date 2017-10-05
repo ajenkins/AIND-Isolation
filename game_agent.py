@@ -350,7 +350,7 @@ class AlphaBetaPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        max_value = self._max_value(game, alpha, beta, depth)
+        max_value = self._max_value(game, alpha, beta, depth - 1)
         return next(m for m in game.get_legal_moves()
             if max_value == self._max_value(game.forecast_move(m), alpha, beta, depth - 1))
 
