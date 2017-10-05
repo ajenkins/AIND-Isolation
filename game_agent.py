@@ -350,9 +350,17 @@ class AlphaBetaPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        max_value = self._max_value(game, alpha, beta, depth)
-        return next(m for m in game.get_legal_moves()
-            if max_value == self._max_value(game.forecast_move(m), alpha, beta, depth - 1))
+        max_value = float('-inf')
+        best_move = (-1, -1)
+        for m in game.get_legal_moves():
+            this_max = self._min_value(game.forecast_move(m), alpha, beta, depth - 1)
+            if this_max > max_value:
+                max_value = this_max
+                best_move = m
+            if max_value >= beta:
+                return best_move
+            alpha = max(max_value, alpha)
+        return best_move
 
     def _terminal_test(self, game, remaining_depth):
         """ Return True if the game is over for the active player
