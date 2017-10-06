@@ -3,12 +3,39 @@ test your agent's strength against a set of known agents using tournament.py
 and include the results in your report.
 """
 import random
+from collections import namedtuple
 
 
 class SearchTimeout(Exception):
     """Subclass base exception for code clarity. """
     pass
 
+def _win_or_loss(game, player):
+    """Return positive infinity if player has won the game and
+    return negative infinity if the player has lost the game.
+    Otherwise, return None.
+    """
+    if game.is_loser(player):
+        return float("-inf")
+    if game.is_winner(player):
+        return float("inf")
+    return None
+
+def _heuristic_helpers(game, player):
+    """Return a namedtuple containing pre-calculated values from the
+    current game state that may help calculate a heuristic score
+    """
+    HeuristicHelpers = namedtuple('HeuristicHelpers',
+        'my_moves their_moves total_size remaining_size progress')
+    h = HeuristicHelpers(
+        len(game.get_legal_moves(player)),
+        len(game.get_legal_moves(game.get_opponent(player))),
+        game.height * game.width,
+        len(game.get_blank_spaces()),
+        progress=None
+    )
+    h = h._replace(progress=(h.total_size - h.remaining_size) / h.total_size)
+    return h
 
 def custom_score(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -34,8 +61,15 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
+    def _get_weights(helpers):
+        return (1, 1)
+
+    if _win_or_loss(game, player):
+        return _win_or_loss(game, player)
+
+    helpers = _heuristic_helpers(game, player)
+    my_weight, their_weight = _get_weights(helpers)
+    return (my_weight * helpers.my_moves) - (their_weight * helpers.their_moves)
 
 
 def custom_score_2(game, player):
@@ -60,8 +94,15 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
+    def _get_weights(helpers):
+        return (2, 1)
+
+    if _win_or_loss(game, player):
+        return _win_or_loss(game, player)
+
+    helpers = _heuristic_helpers(game, player)
+    my_weight, their_weight = _get_weights(helpers)
+    return (my_weight * helpers.my_moves) - (their_weight * helpers.their_moves)
 
 
 def custom_score_3(game, player):
@@ -86,8 +127,15 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
+    def _get_weights(helpers):
+        return (1, 2)
+
+    if _win_or_loss(game, player):
+        return _win_or_loss(game, player)
+
+    helpers = _heuristic_helpers(game, player)
+    my_weight, their_weight = _get_weights(helpers)
+    return (my_weight * helpers.my_moves) - (their_weight * helpers.their_moves)
 
 
 class IsolationPlayer:
@@ -214,7 +262,7 @@ class MinimaxPlayer(IsolationPlayer):
 
         def sort_func(move):
             return self._min_value(game.forecast_move(move), depth - 1)
-        return max(game.get_legal_moves(), key=sort_func)
+        return max(game.get_legal_moves(), key=sort_func, default=(-1, -1))
 
     def _terminal_test(self, game, remaining_depth):
         """ Return True if the game is over for the active player
