@@ -5,6 +5,9 @@ and include the results in your report.
 import random
 from collections import namedtuple
 
+import numpy
+numpy.seterr(divide='ignore')
+
 
 class SearchTimeout(Exception):
     """Subclass base exception for code clarity. """
@@ -69,7 +72,7 @@ def custom_score(game, player):
 
     helpers = _heuristic_helpers(game, player)
     my_weight, their_weight = _get_weights(helpers)
-    return (my_weight * helpers.my_moves) - (their_weight * helpers.their_moves)
+    return numpy.float64(my_weight * helpers.my_moves) / (their_weight * helpers.their_moves)
 
 
 def custom_score_2(game, player):
@@ -102,7 +105,7 @@ def custom_score_2(game, player):
 
     helpers = _heuristic_helpers(game, player)
     my_weight, their_weight = _get_weights(helpers)
-    return (my_weight * helpers.my_moves) - (their_weight * helpers.their_moves)
+    return numpy.float64(my_weight * helpers.my_moves) / (their_weight * helpers.their_moves)
 
 
 def custom_score_3(game, player):
@@ -135,7 +138,7 @@ def custom_score_3(game, player):
 
     helpers = _heuristic_helpers(game, player)
     my_weight, their_weight = _get_weights(helpers)
-    return (my_weight * helpers.my_moves) - (their_weight * helpers.their_moves)
+    return numpy.float64(my_weight * helpers.my_moves) / (their_weight * helpers.their_moves)
 
 
 class IsolationPlayer:
@@ -337,7 +340,7 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         # Initialize the best move so that this function returns something
         # in case the search fails due to timeout
-        best_move = (-1, -1)
+        best_move = next(iter(game.get_legal_moves()), (-1, -1))
         search_depth = 1
 
         while True:
