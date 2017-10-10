@@ -5,9 +5,6 @@ and include the results in your report.
 import random
 from collections import namedtuple
 
-import numpy
-numpy.seterr(divide='ignore')
-
 
 class SearchTimeout(Exception):
     """Subclass base exception for code clarity. """
@@ -23,22 +20,6 @@ def _win_or_loss(game, player):
     if game.is_winner(player):
         return float("inf")
     return None
-
-def _heuristic_helpers(game, player):
-    """Return a namedtuple containing pre-calculated values from the
-    current game state that may help calculate a heuristic score
-    """
-    HeuristicHelpers = namedtuple('HeuristicHelpers',
-        'my_moves their_moves total_size remaining_size progress')
-    h = HeuristicHelpers(
-        len(game.get_legal_moves(player)),
-        len(game.get_legal_moves(game.get_opponent(player))),
-        game.height * game.width,
-        len(game.get_blank_spaces()),
-        progress=None
-    )
-    h = h._replace(progress=(h.total_size - h.remaining_size) / h.total_size)
-    return h
 
 def custom_score(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -64,16 +45,17 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    def _get_weights(helpers):
-        return (1, 1)
+    def get_weights():
+        return (2.0, 1.0)
 
-    if _win_or_loss(game, player):
-        return _win_or_loss(game, player)
+    w_or_l = _win_or_loss(game, player)
+    if w_or_l:
+        return w_or_l
 
-    helpers = _heuristic_helpers(game, player)
-    my_weight, their_weight = _get_weights(helpers)
-    return numpy.float64(my_weight * helpers.my_moves) / (their_weight * helpers.their_moves)
-
+    my_moves = len(game.get_legal_moves(player))
+    their_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    my_weight, their_weight = get_weights()
+    return (my_weight * my_moves) - (their_weight * their_moves)
 
 def custom_score_2(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -97,15 +79,17 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    def _get_weights(helpers):
-        return (2, 1)
+    def get_weights():
+        return (-1.0, 0.0)
 
-    if _win_or_loss(game, player):
-        return _win_or_loss(game, player)
+    w_or_l = _win_or_loss(game, player)
+    if w_or_l:
+        return w_or_l
 
-    helpers = _heuristic_helpers(game, player)
-    my_weight, their_weight = _get_weights(helpers)
-    return numpy.float64(my_weight * helpers.my_moves) / (their_weight * helpers.their_moves)
+    my_moves = len(game.get_legal_moves(player))
+    their_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    my_weight, their_weight = get_weights()
+    return (my_weight * my_moves) - (their_weight * their_moves)
 
 
 def custom_score_3(game, player):
@@ -130,15 +114,17 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    def _get_weights(helpers):
-        return (1, 2)
+    def get_weights():
+        return (0.0, 1.0)
 
-    if _win_or_loss(game, player):
-        return _win_or_loss(game, player)
+    w_or_l = _win_or_loss(game, player)
+    if w_or_l:
+        return w_or_l
 
-    helpers = _heuristic_helpers(game, player)
-    my_weight, their_weight = _get_weights(helpers)
-    return numpy.float64(my_weight * helpers.my_moves) / (their_weight * helpers.their_moves)
+    my_moves = len(game.get_legal_moves(player))
+    their_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    my_weight, their_weight = get_weights()
+    return (my_weight * my_moves) - (their_weight * their_moves)
 
 
 class IsolationPlayer:
