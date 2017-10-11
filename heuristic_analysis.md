@@ -1,43 +1,15 @@
-# Heuristics I tried but didn't use
-#### Ratio of my open moves to their open moves
-This was similar to the Improved heuristic, but instead of maximizing
-the spread between own moves and opponent moves, this maximized the _ratio_
-of own moves and opponent moves. The results of this heuristic were unimpressive,
-and after consideration I'm not convinced that this heuristic is functionally
-different from the normal Improved heuristic.
-
-#### Improved heuristic with different weights
-One thing I tried a lot of was modifying the Improved heuristic with
-different weights. So instead of just doing `my_moves - their_moves`
-I did `(my_weight * my_moves) - (their_weight * their_moves)`. I tried
-many different values for these weights, and eventually settled on
-one permutation of weights for my best heuristic (see below).
-
-#### Adapting strategy over the course of the game
-Building on the weighted version of the Improved heuristic,
-I tried updating these weights as the game progressed. I used
-the percentage of spaces used on the board as a proxy for the progress
-of the game, even though most games end before the board has been filled.
-I tried making the agent more aggressive as the game progressed, which I
-did by increasing the weight for opponent moves and decreasing the weight
-for own moves, as well as the inverse. Neither performed well against simpler
-heuristics.
-
-#### Improved heuristic with opening book
-Based on the recommendation given in the lectures, I also attempted to create
-an opening book of moves (really just one). I added logic to always take the
-center position (or near center if board dimensions were even) if it was a
-player's first move. Otherwise, the agent just used the Improved heuristic.
-This actually performed worse than the pure Improved heuristic, maybe because
-taking the center position isn't as advantageous in Isolation with knights.
+### Heuristics I tried but didn't use
+1. Ratio of my open moves to their open moves
+1. Adapting weights over the course of the game. More aggressive or less aggressive.
+1. Improved heuristic with opening book. First move is always center position.
 
 # Explanation of the three heuristics I submitted
-## `custom_score` - Improved heuristic with 2/1 weights
+### `custom_score` - Improved heuristic with 2/1 weights
 This was one of the weighted versions of the Improved heuristic, described above.
 I settled on the weights of `my_weight = 2` and `their_weight = 1` for the reasons
 described at the end.
 
-## `custom_score_2` - Warnsdorf's Rule
+### `custom_score_2` - Warnsdorf's Rule
 When brainstorming heuristics, one of the things I realized is that Isolation with
 knights is just an adversarial version of a [Knight's Tour](https://en.wikipedia.org/wiki/Knight%27s_tour).
 One of the approaches listed on Wikipedia for solving a Knight's Tour with a computer is
@@ -48,7 +20,7 @@ this was essentially the opposite heuristic to the Open moves heuristic. So for 
 implementation of this heuristic I just returned the negation of the number of open
 moves from any given board position.
 
-## `custom_score_3` - Minimize opponent's open moves
+### `custom_score_3` - Minimize opponent's open moves
 This was inspired by the Open and Improved heuristics. After testing those heuristics,
 an obvious question seems to be "what happens if you only care about minimizing your
 opponent's possible moves?" To me this seemed equally valid a strategy as maximizing
