@@ -1,13 +1,12 @@
-### Heuristics I tried but didn't use
-1. Ratio of my open moves to their open moves
-1. Adapting weights over the course of the game. More aggressive or less aggressive.
-1. Improved heuristic with opening book. First move is always center position.
-
 # Explanation of the three heuristics I submitted
 ### `custom_score` - Improved heuristic with 2/1 weights
-This was one of the weighted versions of the Improved heuristic, described above.
-I settled on the weights of `my_weight = 2` and `their_weight = 1` for the reasons
-described at the end.
+`custom_score`, my best heuristic, was inspired by my observation that the Open and
+Improved algorithms seemed to perform about equally well when I ran them against
+each other using `tournament.py`. From this observation, I hypothesized that maximizing
+the number of possible own moves was more important than minimizing the number of possible
+moves for your opponent, although both are important. Based on this, I created a heuristic
+that treated the number of own moves as twice as important as the number of opponent moves,
+then maximized the spread between these two values just like the Improved heuristic.
 
 ### `custom_score_2` - Warnsdorf's Rule
 When brainstorming heuristics, one of the things I realized is that Isolation with
@@ -27,17 +26,17 @@ opponent's possible moves?" To me this seemed equally valid a strategy as maximi
 your own possible moves, and I was curious how it would compare to Open and Improved.
 
 # How I chose my best heuristic
-`custom_score`, my best heuristic, was inspired by my observation that the Open and
-Improved algorithms seemed to perform about equally well when I ran them against
-each other using `tournament.py`. From this observation, I hypothesized that maximizing
-the number of possible own moves was more important than minimizing the number of possible
-moves for your opponent, although both are important. Based on this, I created a heuristic
-that treated the number of own moves as twice as important as the number of opponent moves,
-then maximized the spread between these two values just like the Improved heuristic.
-To test this, I modified `tournament.py` to run 100 games instead of 10 games, and I only
-compared my heuristics with AB_Open, AB_Center, and AB_Improved since they were the only
-agents that posed a significant challenge for any of the alpha-beta based agents.
-The results of this test are below:
+I recommend my `custom_score` heuristic as a good heuristic for the following reasons:
+* It performed the best in the tournament I ran, which played 100 matches against the
+  best agents in `sample_players.py`.
+* The computational cost is extremely low, which allows the search algorithm to search
+  more of the state space. The slowest part of the heuristic calculation is finding
+  the legal moves for both players, which runs in O(n), where n is the number of board spaces.
+* The heuristic does not search the game tree to a depth beyond the current move. This means
+  the heuristic is less "smart", but also ensures that it will always return a value quickly.
+* Both the state of the active player and opponent are considered in the heuristic evaluation.
+  The number of moves available to the active player is considered to be twice as important as the
+  moves available to the opponent.
 
 ```
 Match #   Opponent    AB_Improved    AB_Open     AB_Custom   AB_Custom_2  AB_Custom_3
